@@ -161,9 +161,11 @@ namespace NewPlay.ArcadeIdle
                 if (agent != null)
                 {
                     agent.areaMask = battleAreaMask;
+                    agent.enabled = true;
                     agent.Warp(pos);
                     agent.isStopped = false;
                 }
+                fighter.Relive();
             }
 
             var token = go.GetComponent<MonsterSpawnToken>();

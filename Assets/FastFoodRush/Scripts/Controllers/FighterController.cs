@@ -59,6 +59,17 @@ namespace NewPlay.ArcadeIdle
 
         }
 
+        public void Relive()
+        {
+            Health.ResetHealth();
+            agent.enabled = true;
+            agent.isStopped = false;
+            if (brain != null)
+            {
+                brain.Reset();
+            }
+        }
+
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
@@ -74,7 +85,7 @@ namespace NewPlay.ArcadeIdle
                 combat,
                 Health
             );
-
+            Health.OnDead -= HandleDead;
             Health.OnDead += HandleDead;
         }
 
@@ -382,6 +393,12 @@ namespace NewPlay.ArcadeIdle
 
             health.OnDead += OnDead;
 
+            state = FighterState.Patrol;
+            GeneratePatrolPoint();
+        }
+
+        public void Reset()
+        {
             state = FighterState.Patrol;
             GeneratePatrolPoint();
         }

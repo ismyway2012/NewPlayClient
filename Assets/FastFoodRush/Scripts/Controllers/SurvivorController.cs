@@ -268,6 +268,7 @@ namespace NewPlay.ArcadeIdle
             fighter.CampType = campType;
             var fighterAgent = fighter.GetComponent<NavMeshAgent>();
             agent.areaMask = 1 << NavMesh.GetAreaFromName("Battle Zone"); // Allow the agent to walk through entrance areas
+            fighter.Relive();
             fighterAgent.Warp(transform.position);
         }
 
