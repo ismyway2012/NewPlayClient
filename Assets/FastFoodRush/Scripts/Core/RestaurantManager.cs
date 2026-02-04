@@ -50,6 +50,9 @@ namespace CryingSnow.FastFoodRush
         [SerializeField, Tooltip("Text field displaying the current money.")]
         private TMP_Text moneyDisplay;
 
+        [SerializeField]
+        private HpBar hpbar;
+
         [SerializeField, Tooltip("Order info display for food orders.")]
         private OrderInfo foodOrderInfo;
 
@@ -76,6 +79,14 @@ namespace CryingSnow.FastFoodRush
         #region Reference Properties
         public OrderInfo FoodOrderInfo => foodOrderInfo;
         public OrderInfo PackageOrderInfo => packageOrderInfo;
+
+        public HpBar HpBar => hpbar;
+
+        public HpBar CreateHpBar()
+        {
+            var hpBarInstance = Instantiate(hpbar, hpbar.transform.parent, false);
+            return hpBarInstance;
+        }
 
         public List<ObjectPile> TrashPiles { get; private set; } = new List<ObjectPile>();
         public TrashBin TrashBin { get; private set; }

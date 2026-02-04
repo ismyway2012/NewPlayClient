@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace CryingSnow.FastFoodRush
 {
     [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(AudioSource))]
-    public class PlayerController : RoleController
+    public class PlayerController : FighterBaseController
     {
         [SerializeField, Tooltip("Base movement speed of the player")]
         private float baseSpeed = 3.0f;
@@ -28,6 +29,19 @@ namespace CryingSnow.FastFoodRush
         [SerializeField, Tooltip("Target for the right hand position in IK")]
         private Transform rightHandTarget;
 
+        [Header("Auto Attack Settings")]
+        [SerializeField, Tooltip("Range to detect enemies for auto attack")]
+        private float autoAttackRange = 10f;
+
+        [SerializeField, Tooltip("Attack cooldown in seconds")]
+        private float attackCooldown = 1f;
+
+        [SerializeField, Tooltip("Battle Zone NavMesh area name")]
+        private string battleZoneName = "Battle Zone";
+
+        [SerializeField, Tooltip("Damage per attack")]
+        private float attackDamage = 100f;
+
 
         public WobblingStack Stack => stack; // Property to access the stack
         public int Capacity { get; private set; } // The current capacity of the player's stack
@@ -45,17 +59,34 @@ namespace CryingSnow.FastFoodRush
 
         const float gravityValue = -9.81f; // Gravity constant
 
+        private Vector3 initPos;
+
+        // Auto attack variables
+        private float attackTimer = 0f;
+        private FighterBaseController currentAutoAttackTarget = null;
+        private int battleZoneAreaIndex = -1;
+        private int battleZoneAreaMask = NavMesh.AllAreas;
+
         void Awake()
         {
+            initPos = transform.position;
+            Health = new AIHealth(10000);
             animator = GetComponent<Animator>(); // Initialize the Animator
             controller = GetComponent<CharacterController>(); // Initialize the CharacterController
             audioSource = GetComponent<AudioSource>(); // Initialize the AudioSource
+            CacheBattleZoneArea();
         }
 
         void Start()
         {
             RestaurantManager.Instance.OnUpgrade += UpdateStats; // Subscribe to the upgrade event
             UpdateStats(); // Update player stats based on upgrades
+        }
+
+        public void Relive()
+        {
+            transform.position = initPos;
+            Health.ResetHealth();
         }
 
         void Update()
@@ -83,6 +114,16 @@ namespace CryingSnow.FastFoodRush
             controller.Move(velocity * Time.deltaTime); // Apply gravity
 
             animator.SetBool("IsMoving", movement != Vector3.zero);
+
+            // Handle auto attack
+            if (IsInBattleZone())
+            {
+                UpdateAutoAttack();
+            }
+            else
+            {
+                currentAutoAttackTarget = null;
+            }
         }
 
         void UpdateStats()
@@ -127,6 +168,106 @@ namespace CryingSnow.FastFoodRush
                 animator.SetIKPosition(AvatarIKGoal.RightHand, rightHandTarget.position);
                 animator.SetIKRotation(AvatarIKGoal.RightHand, rightHandTarget.rotation);
             }
+        }
+
+        /// <summary>
+        /// Cache the Battle Zone NavMesh area index
+        /// </summary>
+        private void CacheBattleZoneArea()
+        {
+            battleZoneAreaIndex = NavMesh.GetAreaFromName(battleZoneName);
+            if (battleZoneAreaIndex >= 0)
+            {
+                battleZoneAreaMask = 1 << battleZoneAreaIndex;
+            }
+            else
+            {
+                battleZoneAreaMask = NavMesh.AllAreas;
+                Debug.LogWarning($"PlayerController: NavMesh area '{battleZoneName}' not found. Falling back to AllAreas.");
+            }
+        }
+
+        /// <summary>
+        /// Check if the player is currently in the Battle Zone
+        /// </summary>
+        private bool IsInBattleZone()
+        {
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(transform.position, out hit, 1f, battleZoneAreaMask))
+            {
+                return (hit.mask & battleZoneAreaMask) != 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Find the nearest enemy within auto attack range
+        /// </summary>
+        private FighterBaseController FindNearestEnemy()
+        {
+            Collider[] colliders = Physics.OverlapSphere(transform.position, autoAttackRange);
+            FighterBaseController nearestEnemy = null;
+            float nearestDistance = autoAttackRange;
+
+            foreach (Collider collider in colliders)
+            {
+                FighterBaseController enemy = collider.GetComponent<FighterBaseController>();
+                if (enemy != null && enemy.CampType != CampType.Friendly && enemy.Health != null && !enemy.Health.IsDead)
+                {
+                    float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                    if (distance < nearestDistance)
+                    {
+                        nearestDistance = distance;
+                        nearestEnemy = enemy;
+                    }
+                }
+            }
+
+            return nearestEnemy;
+        }
+
+        /// <summary>
+        /// Update auto attack logic
+        /// </summary>
+        private void UpdateAutoAttack()
+        {
+            // Update attack cooldown timer
+            if (attackTimer > 0)
+            {
+                attackTimer -= Time.deltaTime;
+            }
+
+            // Check if current target is still valid
+            if (currentAutoAttackTarget != null && (currentAutoAttackTarget.Health == null || currentAutoAttackTarget.Health.IsDead))
+            {
+                currentAutoAttackTarget = null;
+            }
+
+            // If no current target, find a new one
+            if (currentAutoAttackTarget == null)
+            {
+                currentAutoAttackTarget = FindNearestEnemy();
+            }
+
+            // Attack if we have a target and cooldown has expired
+            if (currentAutoAttackTarget != null && attackTimer <= 0)
+            {
+                PerformAutoAttack(currentAutoAttackTarget);
+                attackTimer = attackCooldown;
+            }
+        }
+
+        /// <summary>
+        /// Execute auto attack on target
+        /// </summary>
+        private void PerformAutoAttack(FighterBaseController target)
+        {
+            if (target == null || target.Health == null)
+            {
+                return;
+            }
+
+            target.TakeDamage(attackDamage);
         }
     }
 }

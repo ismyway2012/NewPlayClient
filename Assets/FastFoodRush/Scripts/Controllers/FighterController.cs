@@ -28,9 +28,8 @@ namespace CryingSnow.FastFoodRush
 
     [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(NavMeshAgent))]
-    public class FighterController : RoleController
+    public class FighterController : FighterBaseController
     {
-        public CampType CampType = CampType.Enemy;
 
         [SerializeField]
         private Transform[] attackSlots;
@@ -49,9 +48,6 @@ namespace CryingSnow.FastFoodRush
         private AIBrain brain;
         private Animator animator;
         private NavMeshAgent agent;
-
-
-        public AIHealth Health { get; private set; }
 
         public FighterState State => brain.state;
 
@@ -344,14 +340,14 @@ namespace CryingSnow.FastFoodRush
 
         public bool CanAttack() => timer >= cooldown;
 
-        public void Attack(FighterController target)
+        public void Attack(FighterBaseController target)
         {
             timer = 0f;
 
             var hp = target.Health;
             if (hp != null)
             {
-                hp.TakeDamage(Damage);
+                target.TakeDamage(Damage);
             }
         }
     }
@@ -365,14 +361,14 @@ namespace CryingSnow.FastFoodRush
         private readonly AIMovement movement;
         private readonly AICombat combat;
         private readonly AIHealth health;
-        private readonly FighterController self;
+        private readonly FighterBaseController self;
 
         private Vector3 patrolPoint;
 
-        public FighterController CurrentTarget => perception?.CurrentTarget;
+        public FighterBaseController CurrentTarget => perception?.CurrentTarget;
 
         public AIBrain(
-            FighterController self,
+            FighterBaseController self,
             AIPerception perception,
             AIMovement movement,
             AICombat combat,
@@ -513,12 +509,12 @@ namespace CryingSnow.FastFoodRush
 
     public sealed class AIPerception
     {
-        private readonly FighterController self;
+        private readonly FighterBaseController self;
         private readonly float viewRadius;
 
-        public FighterController CurrentTarget { get; private set; }
+        public FighterBaseController CurrentTarget { get; private set; }
 
-        public AIPerception(FighterController self, float viewRadius)
+        public AIPerception(FighterBaseController self, float viewRadius)
         {
             this.self = self;
             this.viewRadius = viewRadius;
@@ -600,6 +596,11 @@ namespace CryingSnow.FastFoodRush
                 CurrentHP = 0;
                 OnDead?.Invoke();
             }
+        }
+
+        public void ResetHealth()
+        {
+            CurrentHP = MaxHP;
         }
     }
 

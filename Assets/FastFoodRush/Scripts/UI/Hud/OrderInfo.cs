@@ -5,7 +5,7 @@ using DG.Tweening;
 
 namespace CryingSnow.FastFoodRush
 {
-    public class OrderInfo : MonoBehaviour
+    public class OrderInfo : HudBase
     {
 
         [SerializeField, Tooltip("The icon image to be displayed for the order info.")]
@@ -17,25 +17,10 @@ namespace CryingSnow.FastFoodRush
         [SerializeField, Tooltip("The text component that shows the amount for the order.")]
         private TMP_Text amountText;
 
-        [SerializeField, Tooltip("The offset from the displayer's position to place the order info on screen.")]
-        private Vector3 displayOffset = new Vector3(0f, 2.5f, 0f);
-
-        private Transform displayer; // Transform of the object (e.g., a customer) the order info is attached to
-        private Camera mainCamera; // Main camera reference to convert world position to screen position
-
-        void Start()
+        protected override void Start()
         {
-            mainCamera = Camera.main; // Get the main camera reference
+            base.Start();
             HideInfo(); // Ensure the order info is hidden at the start
-        }
-
-        void LateUpdate()
-        {
-            if (displayer == null) return; // If no displayer is set, do nothing
-
-            // Calculate the display position of the order info in screen space
-            var displayPosition = displayer.position + displayOffset;
-            transform.position = mainCamera.WorldToScreenPoint(displayPosition); // Set the position of the UI element on screen
         }
 
         /// <summary>
@@ -48,7 +33,7 @@ namespace CryingSnow.FastFoodRush
         public void ShowInfo(Transform displayer, int amount)
         {
             gameObject.SetActive(true); // Enable the order info UI element
-            this.displayer = displayer; // Set the displayer's transform
+            this.Target = displayer; // Set the displayer's transform
 
             bool active = amount > 0; // Determine if the amount is greater than 0
             iconImage.SetActive(active); // Set the icon's active state based on the amount
@@ -64,13 +49,13 @@ namespace CryingSnow.FastFoodRush
         public void HideInfo()
         {
             gameObject.SetActive(false); // Disable the order info UI element
-            displayer = null; // Reset the displayer reference
+            Target = null; // Reset the displayer reference
         }
 
         public void ShowDoing(Transform displayer, float time)
         {
             gameObject.SetActive(true);
-            this.displayer = displayer; // Set the displayer's transform
+            this.Target = displayer; // Set the displayer's transform
             iconImage.SetActive(true);
             amountText.text = string.Empty;
             fillImage.DOKill();
