@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     public class BurgerMachine : FoodMachine
     {

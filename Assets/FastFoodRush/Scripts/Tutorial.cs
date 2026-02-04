@@ -5,7 +5,7 @@ using UnityEngine;
 using TMPro;
 using DG.Tweening;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     public class Tutorial : MonoBehaviour
     {

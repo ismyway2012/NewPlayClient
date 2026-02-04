@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     public class Workstation : Unlockable
     {

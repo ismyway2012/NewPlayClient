@@ -3,7 +3,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Linq;
 using UnityEngine;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     public static class SaveSystem
     {

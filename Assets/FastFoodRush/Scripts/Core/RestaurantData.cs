@@ -1,4 +1,4 @@
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     [System.Serializable]
     public class RestaurantData

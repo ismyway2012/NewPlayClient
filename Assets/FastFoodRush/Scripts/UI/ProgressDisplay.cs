@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     public class ProgressDisplay : MonoBehaviour
     {

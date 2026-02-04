@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using DG.Tweening;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     public class OrderInfo : HudBase
     {

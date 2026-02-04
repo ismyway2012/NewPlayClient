@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using DG.Tweening;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     public class RestaurantManager : MonoBehaviour
     {

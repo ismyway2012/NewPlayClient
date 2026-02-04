@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     /// <summary>
     /// This is an abstract base class for interactable objects. It provides the functionality for detecting player interaction

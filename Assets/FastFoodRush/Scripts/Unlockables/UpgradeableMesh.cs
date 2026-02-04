@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     [RequireComponent(typeof(MeshFilter))]
     public class UpgradeableMesh : MonoBehaviour

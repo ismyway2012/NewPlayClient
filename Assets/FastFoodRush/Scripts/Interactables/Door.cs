@@ -2,7 +2,7 @@ using UnityEngine;
 using DG.Tweening;
 using System.Collections.Generic;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     public class Door : Interactable
     {

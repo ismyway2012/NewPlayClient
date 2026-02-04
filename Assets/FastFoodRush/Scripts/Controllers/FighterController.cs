@@ -1,4 +1,4 @@
-﻿using CryingSnow.FastFoodRush;
+﻿using NewPlay.ArcadeIdle;
 using DG.Tweening;
 using System;
 using System.Collections;
@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     public enum FighterState
     {

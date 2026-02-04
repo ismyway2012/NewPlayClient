@@ -1,7 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     public class TrashBin : Interactable
     {

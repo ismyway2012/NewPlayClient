@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     public class UnlockableBuyer : Interactable
     {

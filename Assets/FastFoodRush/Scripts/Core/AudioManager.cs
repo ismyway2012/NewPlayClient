@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using DG.Tweening;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     public class AudioManager : MonoBehaviour
     {

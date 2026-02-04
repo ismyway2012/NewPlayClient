@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace CryingSnow.FastFoodRush
+namespace NewPlay.ArcadeIdle
 {
     [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(CharacterController))]
